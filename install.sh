@@ -10,6 +10,7 @@ apt update -y && apt install -y default-jre python-pip && pip install dnslib
 mkdir -p /usr/local/collaborator/
 cp *.jar /usr/local/collaborator/burp.jar
 cp dnshook.sh /usr/local/collaborator/
+cp cleanup.sh /usr/local/collaborator/
 
 cp collaborator.config /usr/local/collaborator/collaborator.config
 sed -i "s/INT_IP/$MYPRIVATEIP/g" /usr/local/collaborator/collaborator.config
@@ -33,9 +34,12 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-./certbot-auto certonly --manual-auth-hook ./dnshook.sh -d $DOMAIN -d *.$DOMAIN  --server https://acme-v02.api.letsencrypt.org/directory --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
+./certbot-auto certonly --manual-auth-hook ./dnshook.sh --manual-cleanup-hook ./cleanup.sh \
+    -d $DOMAIN -d *.$DOMAIN  \
+    --server https://acme-v02.api.letsencrypt.org/directory \
+    --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 
-CERT_PATH=/etc/letsencrypt/live/$DOMAIN/
+CERT_PATH=/etc/letsencrypt/live/$DOMAIN
 mkdir -p /usr/local/collaborator/keys/
 cp $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
 cp $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
