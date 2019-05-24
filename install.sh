@@ -33,7 +33,7 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-./certbot-auto certonly --manual-auth-hook dnshook.sh -d $DOMAIN -d *.$DOMAIN  --server https://acme-v02.api.letsencrypt.org/directory --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
+./certbot-auto certonly --manual-auth-hook ./dnshook.sh -d $DOMAIN -d *.$DOMAIN  --server https://acme-v02.api.letsencrypt.org/directory --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 
 CERT_PATH=/etc/letsencrypt/live/$DOMAIN/
 mkdir -p /usr/local/collaborator/keys/
