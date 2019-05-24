@@ -21,6 +21,7 @@ chmod +x /usr/local/collaborator/*
 
 systemctl disable systemd-resolved.service
 systemctl stop systemd-resolved
+rm -rf /etc/resolv.conf
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
 echo "options edns0" >> /etc/resolv.conf
 echo "search eu-north-1.compute.internal" >> /etc/resolv.conf
