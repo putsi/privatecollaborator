@@ -1,0 +1,13 @@
+[Unit]
+Description=Burp Collaborator
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/collaborator/startcollab.sh
+User=root
+Restart=on-failure
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

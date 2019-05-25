@@ -11,14 +11,16 @@ mkdir -p /usr/local/collaborator/
 cp *.jar /usr/local/collaborator/burp.jar
 cp dnshook.sh /usr/local/collaborator/
 cp cleanup.sh /usr/local/collaborator/
-
 cp collaborator.config /usr/local/collaborator/collaborator.config
 sed -i "s/INT_IP/$MYPRIVATEIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/EXT_IP/$MYPUBLICIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/BDOMAIN/$DOMAIN/g" /usr/local/collaborator/collaborator.config
+cp burpcollaborator.service /etc/systemd/system/
+cp startcollab.sh /usr/local/collaborator/
+cp renewcert.sh /etc/cron.daily/
 
 cd /usr/local/collaborator/
-wget https://dl.eff.org/certbot-auto
+wget -O certbot-auto https://dl.eff.org/certbot-auto
 chmod +x /usr/local/collaborator/*
 
 systemctl disable systemd-resolved.service
