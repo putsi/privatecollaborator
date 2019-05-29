@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ls *.jar >/dev/null 2>&1 ||(echo "No Burp JAR found, place it in this directory!" && exit)
+ls *.jar >/dev/null 2>&1 ||(echo "No Burp JAR found, place it in this directory!" && kill $$ && exit)
 
 DOMAIN=$1
 MYPRIVATEIP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4 -s)
