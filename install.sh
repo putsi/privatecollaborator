@@ -3,8 +3,32 @@
 ls *.jar >/dev/null 2>&1 ||(echo "No Burp JAR found, place it in this directory!" && kill $$ && exit)
 
 DOMAIN=$1
-MYPRIVATEIP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4 -s)
-MYPUBLICIP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4 -s)
+
+# Get public IP in case not running on AWS or Digitalocean.
+MYPUBLICIP=$(curl http://checkip.amazonaws.com/ -s)
+MYPRIVATEIP=$(curl http://checkip.amazonaws.com/ -s)
+
+# Get IPs if running on AWS.
+curl http://169.254.169.254/latest -s --output /dev/null -f -m 1
+if [ 0 -eq $? ]; then
+  MYPRIVATEIP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4 -s)
+  MYPUBLICIP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4 -s)
+fi;
+
+# Get IPs if running on Digitalocean.
+curl http://169.254.169.254/metadata/v1/id -s --output /dev/null -f -m1
+if [ 0 -eq $? ]; then
+  # Use Floating IP if the VM has it enabled.
+  FLOATING=$(curl http://169.254.169.254/metadata/v1/floating_ip/ipv4/active -s)
+  if [ "$FLOATING" == "true" ]; then
+    MYPUBLICIP=$(curl http://169.254.169.254/metadata/v1/floating_ip/ipv4/ip_address -s)
+    MYPRIVATEIP=$(curl http://169.254.169.254/metadata/v1/interfaces/public/0/anchor_ipv4/address -s)
+  fi
+  if [ "$FLOATING" == "false" ]; then
+    MYPUBLICIP=$(curl http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address -s)
+    MYPRIVATEIP=$MYPUBLICIP
+  fi
+fi;
 
 apt update -y && apt install -y default-jre python-pip && pip install dnslib
 mkdir -p /usr/local/collaborator/
@@ -37,7 +61,7 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-./certbot-auto certonly --manual-auth-hook ./dnshook.sh --manual-cleanup-hook ./cleanup.sh \
+./certbot-auto certonly --manual-auth-hook "./dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook ./cleanup.sh \
     -d $DOMAIN -d *.$DOMAIN  \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
