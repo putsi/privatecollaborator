@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collaborator logs</title>
+    <script type="text/javascript">
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                document.getElementsByTagName("pre")[0].textContent = xhr.responseText;
+                window.scrollTo(0,document.body.scrollHeight)
+            }
+        }
+        xhr.withCredentials = true;
+        xhr.open('GET', '/burp.txt?'+Math.random(), true);
+        xhr.send(null);
+    </script>
+</head>
+<body>
+<pre></pre>
+</body>
+</html>

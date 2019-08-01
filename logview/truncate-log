@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+* * * * * root test `wc -l /var/www/collaborator/burp.txt | cut -f1 -d" "` -gt "1024" && (tail -1024 /var/www/collaborator/burp.txt > /var/www/collaborator/burp2.txt; cp /var/www/collaborator/burp2.txt /var/www/collaborator/burp.txt; rm /var/www/collaborator/burp2.txt)

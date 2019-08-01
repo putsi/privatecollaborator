@@ -71,3 +71,19 @@ mkdir -p /usr/local/collaborator/keys/
 cp $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
 cp $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
 cp $CERT_PATH/cert.pem /usr/local/collaborator/keys/
+
+# nginx log view
+apt install -y nginx apache2-utils
+sed -i "s/# server_tokens off;/server_tokens off;/g" /etc/nginx/nginx.conf
+rm -v /etc/nginx/sites-enabled/default
+cp logview/collaborator.conf /etc/nginx/sites-available/
+ln -s /etc/nginx/sites-available/collaborator.conf /etc/nginx/sites-enabled/collaborator.conf
+sed -i "s/BDOMAIN/$DOMAIN/g" /etc/nginx/sites-enabled/collaborator.conf
+cp logview/truncate-log /etc/cron.d/
+
+echo "Create collaborator view login:"
+htpasswd -c /etc/nginx/.htpasswd-collaborator collaborator
+mkdir /var/www/collaborator
+cp logview/index.html /var/www/collaborator/
+openssl dhparam -outform pem -out /etc/ssl/dhparam4096.pem 4096
+nginx -t && service nginx start

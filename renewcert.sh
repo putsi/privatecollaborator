@@ -35,3 +35,4 @@ systemctl is-active --quiet burpcollaborator
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 
+service nginx reload

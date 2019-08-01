@@ -12,6 +12,8 @@ Please see [this blog post](https://teamrot.fi/2019/05/23/self-hosted-burp-colla
 1. Clone this repository.
 2. Place your burp jar to the privatecollaborator-directory.
 3. Run `sudo ./install.sh your.domain.fi`.
+    - it will ask for a basic auth password for HTTP log view
+    - https://your.domain.fi:1337/ - will serve burp collaborator logs (just basic interaction logs) - for fast checks without burp client
 4. You should now have Let's encrypt certificate for the domain and a private burp collaborator properly set up.
 5. Start the collaborator with `sudo service burpcollaborator start`.
 6. Configure your Burp Suite Professional to use it.
