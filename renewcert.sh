@@ -40,7 +40,6 @@ systemctl is-active --quiet burpcollaborator
 
 # Copy certifcates to collaborator directory
 CERT_PATH=/etc/letsencrypt/live/$DOMAIN
-rm /usr/local/collaborator/keys/*.pem
 cp $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
 cp $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
 cp $CERT_PATH/cert.pem /usr/local/collaborator/keys/
