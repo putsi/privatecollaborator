@@ -41,6 +41,8 @@ sed -i "s/EXT_IP/$MYPUBLICIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/BDOMAIN/$DOMAIN/g" /usr/local/collaborator/collaborator.config
 cp burpcollaborator.service /etc/systemd/system/
 cp startcollab.sh /usr/local/collaborator/
+
+sed -i "s/BDOMAIN/$DOMAIN/g" renewcert.sh
 cp renewcert.sh /etc/cron.daily/
 
 cd /usr/local/collaborator/

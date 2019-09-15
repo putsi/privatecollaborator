@@ -2,6 +2,9 @@
 
 # Yeah, my bash scripting skills suck.
 
+# Define domain name
+DOMAIN="BDOMAIN"
+
 # Use public IP in case not running on AWS or Digitalocean.
 MYPRIVATEIP=$(curl http://checkip.amazonaws.com/ -s)
 
@@ -35,3 +38,9 @@ systemctl is-active --quiet burpcollaborator
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 
+# Copy certifcates to collaborator directory
+CERT_PATH=/etc/letsencrypt/live/$DOMAIN
+rm /usr/local/collaborator/keys/*.pem
+cp $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
+cp $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
+cp $CERT_PATH/cert.pem /usr/local/collaborator/keys/
