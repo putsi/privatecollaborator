@@ -68,6 +68,6 @@ rm -rf /usr/local/collaborator/keys
 
 CERT_PATH=/etc/letsencrypt/live/$DOMAIN
 mkdir -p /usr/local/collaborator/keys/
-cp $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
-cp $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
-cp $CERT_PATH/cert.pem /usr/local/collaborator/keys/
+ln -s $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
+ln -s $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
+ln -s $CERT_PATH/cert.pem /usr/local/collaborator/keys/
