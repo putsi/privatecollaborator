@@ -19,6 +19,7 @@ sed -i "s/MAIN_DOMAIN/$MAIN_DOMAIN/g" dnsmitm.py
 
 cp dnsmitm.service /etc/systemd/system/
 cp dnsmitm.py /usr/local/collaborator/
+cp renewcert.sh /etc/cron.daily/renewcert.sh
 
 iptables -A INPUT -p udp -m udp --dport 53 -j NFQUEUE --queue-num 1
 iptables-save > /etc/iptables/rules.v4

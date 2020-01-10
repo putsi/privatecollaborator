@@ -62,12 +62,9 @@ read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
 ./certbot-auto certonly --manual-auth-hook "./dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook ./cleanup.sh \
-    -d $DOMAIN -d *.$DOMAIN  \
+    -d "$DOMAIN,*.$DOMAIN"  \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 
 CERT_PATH=/etc/letsencrypt/live/$DOMAIN
-mkdir -p /usr/local/collaborator/keys/
-ln -s $CERT_PATH/privkey.pem /usr/local/collaborator/keys/
-ln -s $CERT_PATH/fullchain.pem /usr/local/collaborator/keys/
-ln -s $CERT_PATH/cert.pem /usr/local/collaborator/keys/
+ln -s $CERT_PATH /usr/local/collaborator/keys
