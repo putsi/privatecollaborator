@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ls *.jar >/dev/null 2>&1 ||(echo "No Burp JAR found, place it in this directory!" && kill $$ && exit)
+ls /opt/BurpSuitePro/BurpSuitePro >/dev/null 2>&1 ||(echo "Install Burp to /opt/BurpSuitePro and run script again" && kill $$ && exit)
 
 DOMAIN=$1
 
@@ -30,9 +30,8 @@ if [ 0 -eq $? ]; then
   fi
 fi;
 
-apt update -y && apt install -y default-jre python-pip && pip install dnslib
+apt update -y && apt install -y python-pip && pip install dnslib
 mkdir -p /usr/local/collaborator/
-cp *.jar /usr/local/collaborator/burp.jar
 cp dnshook.sh /usr/local/collaborator/
 cp cleanup.sh /usr/local/collaborator/
 cp collaborator.config /usr/local/collaborator/collaborator.config
@@ -61,8 +60,8 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-./certbot-auto certonly --manual-auth-hook "./dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook ./cleanup.sh \
-    -d "$DOMAIN,*.$DOMAIN"  \
+./certbot-auto certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
+    -d "*.$DOMAIN"  \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 
