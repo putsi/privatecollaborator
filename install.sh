@@ -30,7 +30,7 @@ if [ 0 -eq $? ]; then
   fi
 fi;
 
-apt update -y && apt install -y python-pip && pip install dnslib
+apt update -y && apt install -y python3 python3-pip certbot && pip3 install dnslib
 mkdir -p /usr/local/collaborator/
 cp dnshook.sh /usr/local/collaborator/
 cp cleanup.sh /usr/local/collaborator/
@@ -43,7 +43,6 @@ cp startcollab.sh /usr/local/collaborator/
 cp renewcert.sh /etc/cron.daily/
 
 cd /usr/local/collaborator/
-wget -O certbot-auto https://dl.eff.org/certbot-auto
 chmod +x /usr/local/collaborator/*
 
 systemctl disable systemd-resolved.service
@@ -60,8 +59,8 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-./certbot-auto certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
-    -d "*.$DOMAIN"  \
+certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
+    -d "*.$DOMAIN, $DOMAIN"  \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
 

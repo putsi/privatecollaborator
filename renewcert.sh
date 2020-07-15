@@ -1,3 +1,3 @@
 #!/bin/bash
 
-certbot-auto renew
+/usr/bin/certbot renew
