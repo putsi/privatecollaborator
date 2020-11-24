@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root";
+  exit 1;
+fi
+
 ls /opt/BurpSuitePro/BurpSuitePro >/dev/null 2>&1 ||(echo "Install Burp to /opt/BurpSuitePro and run script again" && kill $$ && exit)
 
 DOMAIN=$1
