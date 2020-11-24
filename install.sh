@@ -34,7 +34,7 @@ SRC_PATH="`dirname \"$0\"`"
 
 # Get public IP in case not running on AWS or Digitalocean.
 MYPUBLICIP=$(curl http://checkip.amazonaws.com/ -s)
-MYPRIVATEIP=$(curl http://checkip.amazonaws.com/ -s)
+MYPRIVATEIP=$(hostname -I | cut -d' ' -f 1) # It assumes that first network interface is the Internet one
 
 # Get IPs if running on AWS.
 curl http://169.254.169.254/latest -s --output /dev/null -f -m 1
