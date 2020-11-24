@@ -4,6 +4,8 @@ ls /opt/BurpSuitePro/BurpSuitePro >/dev/null 2>&1 ||(echo "Install Burp to /opt/
 
 DOMAIN=$1
 
+SRC_PATH="$(dirname \"$0\")"
+
 # Get public IP in case not running on AWS or Digitalocean.
 MYPUBLICIP=$(curl http://checkip.amazonaws.com/ -s)
 MYPRIVATEIP=$(curl http://checkip.amazonaws.com/ -s)
@@ -32,15 +34,15 @@ fi;
 
 apt update -y && apt install -y python3 python3-pip certbot && pip3 install dnslib
 mkdir -p /usr/local/collaborator/
-cp dnshook.sh /usr/local/collaborator/
-cp cleanup.sh /usr/local/collaborator/
-cp collaborator.config /usr/local/collaborator/collaborator.config
+cp "$SRC_PATH/dnshook.sh" /usr/local/collaborator/
+cp "$SRC_PATH/cleanup.sh" /usr/local/collaborator/
+cp "$SRC_PATH/collaborator.config" /usr/local/collaborator/collaborator.config
 sed -i "s/INT_IP/$MYPRIVATEIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/EXT_IP/$MYPUBLICIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/BDOMAIN/$DOMAIN/g" /usr/local/collaborator/collaborator.config
-cp burpcollaborator.service /etc/systemd/system/
-cp startcollab.sh /usr/local/collaborator/
-cp renewcert.sh /etc/cron.daily/
+cp "$SRC_PATH/burpcollaborator.service" /etc/systemd/system/
+cp "$SRC_PATH/startcollab.sh" /usr/local/collaborator/
+cp "$SRC_PATH/renewcert.sh" /etc/cron.daily/
 
 cd /usr/local/collaborator/
 chmod +x /usr/local/collaborator/*
