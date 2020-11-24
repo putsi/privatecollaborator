@@ -5,18 +5,19 @@ if [[ $(id -u) -ne 0 ]]; then
   exit 1
 fi
 
-if [ "$#" -lt 1 ]; then
-  echo "Usage: $0 yourdomain.com [burp-installation-path.sh]"
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 yourdomain.com email@address.com [burp-installation-path.sh]"
   exit 1
 fi
 
 DOMAIN=$1
-BURP_INSTALLATOR="$2"
+EMAIL=$2
+BURP_INSTALLATOR="$3"
 
 if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
   if [ -z "$BURP_INSTALLATOR" ]; then
     echo "Install Burp to /opt/BurpSuitePro and run script again or provide a path to burp installator"
-    echo "Usage: $0 $DOMAIN burp-installation-path.sh"
+    echo "Usage: $0 $DOMAIN email@address.com burp-installation-path.sh"
     exit
   elif [ ! -f "$BURP_INSTALLATOR" ]; then
     echo "Burp installator ($BURP_INSTALLATOR) does not exist"
@@ -86,7 +87,7 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
+certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" -m $EMAIL --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
     -d "*.$DOMAIN, $DOMAIN"  \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
