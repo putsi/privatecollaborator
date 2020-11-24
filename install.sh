@@ -29,7 +29,7 @@ if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
   fi
 fi
 
-SRC_PATH="$(dirname \"$0\")"
+SRC_PATH="`dirname \"$0\"`"
 
 # Get public IP in case not running on AWS or Digitalocean.
 MYPUBLICIP=$(curl http://checkip.amazonaws.com/ -s)
