@@ -1,13 +1,33 @@
 #!/bin/bash
 
 if [[ $(id -u) -ne 0 ]]; then
-  echo "Please run as root";
-  exit 1;
+  echo "Please run as root"
+  exit 1
 fi
 
-ls /opt/BurpSuitePro/BurpSuitePro >/dev/null 2>&1 ||(echo "Install Burp to /opt/BurpSuitePro and run script again" && kill $$ && exit)
+if [ "$#" -lt 1 ]; then
+  echo "Usage: $0 yourdomain.com [burp-installation-path.sh]"
+  exit 1
+fi
 
 DOMAIN=$1
+BURP_INSTALLATOR="$2"
+
+if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
+  if [ -z "$BURP_INSTALLATOR" ]; then
+    echo "Install Burp to /opt/BurpSuitePro and run script again or provide a path to burp installator"
+    echo "Usage: $0 $DOMAIN burp-installation-path.sh"
+    exit
+  elif [ ! -f "$BURP_INSTALLATOR" ]; then
+    echo "Burp installator ($BURP_INSTALLATOR) does not exist"
+    exit
+  fi
+  bash "$BURP_INSTALLATOR" -q
+  if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
+    echo "Burp Suite Pro was not installed correctly. Please install it manually and run the script again"
+    exit
+  fi
+fi
 
 SRC_PATH="$(dirname \"$0\")"
 
