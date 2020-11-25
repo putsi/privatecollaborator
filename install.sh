@@ -4,7 +4,7 @@ ls /opt/BurpSuitePro/BurpSuitePro >/dev/null 2>&1 ||(echo "Install Burp to /opt/
 
 DOMAIN=$1
 
-# Get public IP in case not running on AWS or Digitalocean.
+# Get public IP in case not running on AWS, Azure or Digitalocean.
 MYPUBLICIP=$(curl http://checkip.amazonaws.com/ -s)
 MYPRIVATEIP=$(curl http://checkip.amazonaws.com/ -s)
 
@@ -13,6 +13,13 @@ curl http://169.254.169.254/latest -s --output /dev/null -f -m 1
 if [ 0 -eq $? ]; then
   MYPRIVATEIP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4 -s)
   MYPUBLICIP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4 -s)
+fi;
+
+# Get IPs if running on Azure.
+curl --header 'Metadata: true' "http://169.254.169.254/metadata/instance/network?api-version=2017-08-01" -s --output /dev/null -f -m 1
+if [ 0 -eq $? ]; then
+  MYPRIVATEIP=$(curl --header 'Metadata: true' "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/privateIpAddress?api-version=2017-08-01&format=text" -s)
+  MYPUBLICIP=$(curl --header 'Metadata: true' "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/publicIpAddress?api-version=2017-08-01&format=text" -s)
 fi;
 
 # Get IPs if running on Digitalocean.
@@ -49,8 +56,8 @@ systemctl disable systemd-resolved.service
 systemctl stop systemd-resolved
 rm -rf /etc/resolv.conf
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
-echo "options edns0" >> /etc/resolv.conf
-echo "search eu-north-1.compute.internal" >> /etc/resolv.conf
+echo "nameserver 1.0.0.1" > /etc/resolv.conf
+
 grep $MYPRIVATEIP /etc/hosts -q || (echo $MYPRIVATEIP `hostname` >> /etc/hosts)
 
 echo ""
