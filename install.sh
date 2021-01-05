@@ -93,11 +93,21 @@ echo "CTRL-C if you don't need to obtain certificates."
 echo ""
 read -p "Press enter to continue"
 
-rm -rf /usr/local/collaborator/keys
+# Wildcard certificate is requested in two steps as it is less error-prone.
+# The first step requests the actual wildcard with *.domain.com (all subdomains) certificate.
+# The second step expands the certificate with domain.com (without any subdomain).
+# This used to be possible in single-step, however currently it can lead to invalid TXT-record error,
+# as certbot starts the dnshooks concurrently and not consecutively.
 certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" -m $EMAIL --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
-    -d "*.$DOMAIN, $DOMAIN"  \
+    -d "*.$DOMAIN" \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
+
+certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" -m $EMAIL --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
+    -d "$DOMAIN, *.$DOMAIN" \
+    --server https://acme-v02.api.letsencrypt.org/directory \
+    --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01 \
+    --expand
 
 CERT_PATH=/etc/letsencrypt/live/$DOMAIN
 ln -s $CERT_PATH /usr/local/collaborator/keys
