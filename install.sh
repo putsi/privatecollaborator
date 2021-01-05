@@ -84,7 +84,7 @@ systemctl disable systemd-resolved.service
 systemctl stop systemd-resolved
 rm -rf /etc/resolv.conf
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
-echo "nameserver 1.0.0.1" > /etc/resolv.conf
+echo "nameserver 1.0.0.1" >> /etc/resolv.conf
 
 grep $MYPRIVATEIP /etc/hosts -q || (echo $MYPRIVATEIP `hostname` >> /etc/hosts)
 
