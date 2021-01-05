@@ -6,7 +6,7 @@ if [[ $(id -u) -ne 0 ]]; then
 fi
 
 if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 yourdomain.com email@address.com [burp-installation-path.sh]"
+  echo "Usage: $0 yourdomain.com email@address.com [burp-installer-script.sh]"
   exit 1
 fi
 
@@ -14,18 +14,18 @@ DOMAIN=$1
 EMAIL=$2
 BURP_INSTALLATOR="$3"
 
-if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
+if [ ! -f /usr/local/BurpSuitePro/BurpSuitePro ]; then
   if [ -z "$BURP_INSTALLATOR" ]; then
-    echo "Install Burp to /opt/BurpSuitePro and run script again or provide a path to burp installator"
-    echo "Usage: $0 $DOMAIN email@address.com burp-installation-path.sh"
+    echo "Install Burp to /usr/local/BurpSuitePro and run script again or provide a path to burp installer script"
+    echo "Usage: $0 $DOMAIN email@address.com [burp-installation-path.sh]"
     exit
   elif [ ! -f "$BURP_INSTALLATOR" ]; then
-    echo "Burp installator ($BURP_INSTALLATOR) does not exist"
+    echo "Burp installer script ($BURP_INSTALLATOR) does not exist"
     exit
   fi
   bash "$BURP_INSTALLATOR" -q
-  if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
-    echo "Burp Suite Pro was not installed correctly. Please install it manually and run the script again"
+  if [ ! -f /usr/local/BurpSuitePro/BurpSuitePro ]; then
+    echo "Burp Suite Pro was not installed correctly. Please install it manually to /usr/local/BurpSuitePro and run the installer script again"
     exit
   fi
 fi
