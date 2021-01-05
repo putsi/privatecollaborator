@@ -1,12 +1,40 @@
 #!/bin/bash
 
-ls /opt/BurpSuitePro/BurpSuitePro >/dev/null 2>&1 ||(echo "Install Burp to /opt/BurpSuitePro and run script again" && kill $$ && exit)
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 yourdomain.com email@address.com [burp-installation-path.sh]"
+  exit 1
+fi
 
 DOMAIN=$1
+EMAIL=$2
+BURP_INSTALLATOR="$3"
+
+if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
+  if [ -z "$BURP_INSTALLATOR" ]; then
+    echo "Install Burp to /opt/BurpSuitePro and run script again or provide a path to burp installator"
+    echo "Usage: $0 $DOMAIN email@address.com burp-installation-path.sh"
+    exit
+  elif [ ! -f "$BURP_INSTALLATOR" ]; then
+    echo "Burp installator ($BURP_INSTALLATOR) does not exist"
+    exit
+  fi
+  bash "$BURP_INSTALLATOR" -q
+  if [ ! -f /opt/BurpSuitePro/BurpSuitePro ]; then
+    echo "Burp Suite Pro was not installed correctly. Please install it manually and run the script again"
+    exit
+  fi
+fi
+
+SRC_PATH="`dirname \"$0\"`"
 
 # Get public IP in case not running on AWS or Digitalocean.
 MYPUBLICIP=$(curl http://checkip.amazonaws.com/ -s)
-MYPRIVATEIP=$(curl http://checkip.amazonaws.com/ -s)
+MYPRIVATEIP=$(hostname -I | cut -d' ' -f 1) # It assumes that first network interface is the Internet one
 
 # Get IPs if running on AWS.
 curl http://169.254.169.254/latest -s --output /dev/null -f -m 1
@@ -32,15 +60,15 @@ fi;
 
 apt update -y && apt install -y python3 python3-pip certbot && pip3 install dnslib
 mkdir -p /usr/local/collaborator/
-cp dnshook.sh /usr/local/collaborator/
-cp cleanup.sh /usr/local/collaborator/
-cp collaborator.config /usr/local/collaborator/collaborator.config
+cp "$SRC_PATH/dnshook.sh" /usr/local/collaborator/
+cp "$SRC_PATH/cleanup.sh" /usr/local/collaborator/
+cp "$SRC_PATH/collaborator.config" /usr/local/collaborator/collaborator.config
 sed -i "s/INT_IP/$MYPRIVATEIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/EXT_IP/$MYPUBLICIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/BDOMAIN/$DOMAIN/g" /usr/local/collaborator/collaborator.config
-cp burpcollaborator.service /etc/systemd/system/
-cp startcollab.sh /usr/local/collaborator/
-cp renewcert.sh /etc/cron.daily/
+cp "$SRC_PATH/burpcollaborator.service" /etc/systemd/system/
+cp "$SRC_PATH/startcollab.sh" /usr/local/collaborator/
+cp "$SRC_PATH/renewcert.sh" /etc/cron.daily/
 
 cd /usr/local/collaborator/
 chmod +x /usr/local/collaborator/*
@@ -59,7 +87,7 @@ echo ""
 read -p "Press enter to continue"
 
 rm -rf /usr/local/collaborator/keys
-certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
+certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" -m $EMAIL --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
     -d "*.$DOMAIN, $DOMAIN"  \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
