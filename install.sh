@@ -80,12 +80,6 @@ cp "$SRC_PATH/renewcert.sh" /etc/cron.daily/
 cd /usr/local/collaborator/
 chmod +x /usr/local/collaborator/*
 
-systemctl disable systemd-resolved.service
-systemctl stop systemd-resolved
-rm -rf /etc/resolv.conf
-echo "nameserver 1.1.1.1" > /etc/resolv.conf
-echo "nameserver 1.0.0.1" >> /etc/resolv.conf
-
 grep $MYPRIVATEIP /etc/hosts -q || (echo $MYPRIVATEIP `hostname` >> /etc/hosts)
 
 echo ""
