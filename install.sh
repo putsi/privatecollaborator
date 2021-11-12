@@ -65,7 +65,13 @@ if [ 0 -eq $? ]; then
   fi
 fi;
 
-apt update -y && apt install -y python3 python3-pip certbot && pip3 install dnslib
+# Use snap version of Certbot because APT-version is too old.
+snap install --classic certbot
+snap refresh certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
+
+apt update -y && apt install -y python3 python3-pip && pip3 install dnslib
+
 mkdir -p /usr/local/collaborator/
 cp "$SRC_PATH/dnshook.sh" /usr/local/collaborator/
 cp "$SRC_PATH/cleanup.sh" /usr/local/collaborator/
