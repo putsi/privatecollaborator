@@ -30,6 +30,10 @@ if [ ! -f /usr/local/BurpSuitePro/BurpSuitePro ]; then
   fi
 fi
 
+# Make sure that permissions are ok for all scripts.
+chmod +x *.sh
+
+
 SRC_PATH="`dirname \"$0\"`"
 
 # Get public IP in case not running on AWS, Azure or Digitalocean.
@@ -81,7 +85,7 @@ sed -i "s/EXT_IP/$MYPUBLICIP/g" /usr/local/collaborator/collaborator.config
 sed -i "s/BDOMAIN/$DOMAIN/g" /usr/local/collaborator/collaborator.config
 cp "$SRC_PATH/burpcollaborator.service" /etc/systemd/system/
 cp "$SRC_PATH/startcollab.sh" /usr/local/collaborator/
-cp "$SRC_PATH/renewcert.sh" /etc/cron.daily/
+cp "$SRC_PATH/renewcert.sh" /etc/cron.daily/renewcert
 
 cd /usr/local/collaborator/
 chmod +x /usr/local/collaborator/*
