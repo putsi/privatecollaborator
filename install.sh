@@ -74,7 +74,7 @@ snap install --classic certbot
 snap refresh certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
 
-apt update -y && apt install -y python3 python3-pip && pip3 install dnslib
+apt update -y && apt install -y python3 python3-dnslib
 
 mkdir -p /usr/local/collaborator/
 cp "$SRC_PATH/dnshook.sh" /usr/local/collaborator/

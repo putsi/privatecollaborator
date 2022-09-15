@@ -11,5 +11,4 @@ service burpcollaborator stop &>/dev/null
 python3 -m dnslib.fixedresolver -a $1 --zonefile /tmp/collab.zonefile &>/dev/null &disown
 
 # Sleep to avoid DNS propagation issues.
-sleep 10
-
+sleep 15
