@@ -1,12 +1,15 @@
-# Burp suite private collaborator
+# Burp Suite - Private collaborator server
+
 A script for installing private Burp Collaborator with Let's Encrypt SSL-certificate.
-Should work on (Ubuntu 18.04):
+Should work on Ubuntu 18.04/20.04/22.10:
 - Amazon AWS EC2 VM with or without Elastic IP.
 - DigitalOcean VM with or without Floating IP.
 - Azure.
 - Any other platform as long as the VM has public IP.
 
-Please see [this blog post](https://teamrot.fi/2019/05/23/self-hosted-burp-collaborator-with-custom-domain/) for usage instructions.
+Please see the below blog post for usage instructions:
+
+[https://teamrot.fi/self-hosted-burp-collaborator-with-custom-domain/](https://teamrot.fi/self-hosted-burp-collaborator-with-custom-domain/)
 
 ## TL;DR:
 
@@ -18,3 +21,7 @@ Please see [this blog post](https://teamrot.fi/2019/05/23/self-hosted-burp-colla
 6. Configure your Burp Suite Professional to use it.
 7. ????
 8. Profit.
+
+### Important note:
+
+As stated in [the blog post](https://teamrot.fi/self-hosted-burp-collaborator-with-custom-domain/), be sure to firewall the ports 9443 and 9090 properly to allow connections only from your own Burp Suite computer IP address. Otherwise everyone in the internet can use your collaborator server!
