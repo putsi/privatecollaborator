@@ -105,12 +105,12 @@ read -p "Press enter to continue"
 certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" -m $EMAIL --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
     -d "*.$DOMAIN" \
     --server https://acme-v02.api.letsencrypt.org/directory \
-    --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01
+    --manual --agree-tos --no-eff-email --preferred-challenges dns-01
 
 certbot certonly --manual-auth-hook "/usr/local/collaborator/dnshook.sh $MYPRIVATEIP" -m $EMAIL --manual-cleanup-hook /usr/local/collaborator/cleanup.sh \
     -d "$DOMAIN, *.$DOMAIN" \
     --server https://acme-v02.api.letsencrypt.org/directory \
-    --manual --agree-tos --no-eff-email --manual-public-ip-logging-ok --preferred-challenges dns-01 \
+    --manual --agree-tos --no-eff-email --preferred-challenges dns-01 \
     --expand
 
 CERT_PATH=/etc/letsencrypt/live/$DOMAIN
